@@ -73,12 +73,9 @@ export default function StudioPage() {
     return (
       <Shell>
         <p className="text-[var(--color-text-muted)]">
-          This area is for curators. Your account does not have that role yet.
+          The Studio is reserved for the Artessa curatorial team.
         </p>
-        <p className="mt-4 text-sm text-[var(--color-text-subtle)]">
-          Set <code>Admin:BootstrapEmail</code> to <code>{user.email}</code> on the API and
-          restart it to grant yourself access.
-        </p>
+        <Button href="/gallery" className="mt-6">Return to the gallery</Button>
       </Shell>
     );
   }

@@ -31,9 +31,9 @@ export default async function Home() {
             The walls are bare
           </h1>
           <p className="mt-5 text-[var(--color-text-muted)]">
-            No work has been published yet. Add the first piece from the Studio.
+            The next collection is being prepared. Please return shortly.
           </p>
-          <Button href="/admin/artworks" className="mt-8">Open the Studio</Button>
+          <Button href="/gallery" className="mt-8">Explore the gallery</Button>
         </section>
       )}
 

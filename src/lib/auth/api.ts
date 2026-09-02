@@ -2,7 +2,9 @@
 
 import type { UserDto } from "@/types/auth";
 
-const BASE = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5080").replace(/\/$/, "");
+// Routed through Next.js so the refresh cookie is first-party on the web
+// origin. Browsers may block cookies set by the separate API origin.
+const BASE = "";
 
 export interface AuthResponse {
   accessToken: string;

@@ -15,20 +15,28 @@ export function UserMenu() {
   const { user, loading, logout } = useAuth();
   const pathname = usePathname();
 
-  // A fixed-size placeholder rather than nothing, so the header does not
-  // reflow when the session resolves.
+  // Never replace the primary account action with an inert placeholder. On a
+  // cold PWA launch the hosted API can take several seconds to wake up; users
+  // must still be able to open the sign-in screen during that time.
   if (loading) {
-    return <div className="h-11 w-20" aria-hidden />;
+    return (
+      <a
+        href={`/login?returnUrl=${encodeURIComponent(pathname)}`}
+        className="relative z-10 inline-flex min-h-11 items-center rounded-sm border border-[var(--color-hairline)] px-4 text-sm font-medium"
+      >
+        Sign in
+      </a>
+    );
   }
 
   if (!user) {
     return (
-      <Link
+      <a
         href={`/login?returnUrl=${encodeURIComponent(pathname)}`}
-        className="inline-flex min-h-11 items-center rounded-sm border border-[var(--color-hairline)] px-4 text-sm font-medium transition-colors hover:border-[var(--color-light)]"
+        className="relative z-10 inline-flex min-h-11 items-center rounded-sm border border-[var(--color-hairline)] px-4 text-sm font-medium transition-colors hover:border-[var(--color-light)]"
       >
         Sign in
-      </Link>
+      </a>
     );
   }
 

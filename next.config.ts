@@ -10,6 +10,10 @@ const withSerwist = withSerwistInit({
 });
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    const api = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5080").replace(/\/$/, "");
+    return [{ source: "/api/auth/:path*", destination: `${api}/api/auth/:path*` }];
+  },
   // Render runs this as a Docker image; standalone output keeps that image
   // small by tracing only the files actually imported.
   output: "standalone",

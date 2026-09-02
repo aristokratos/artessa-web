@@ -54,14 +54,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
     setBusy(true);
 
     try {
-      if (mode === "login") {
-        await login(email, password);
-      } else {
-        await register(email, password, fullName);
-      }
+      const authenticated = mode === "login"
+        ? await login(email, password)
+        : await register(email, password, fullName);
       // replace, not push: the back button must not return to a form the user
       // has already completed.
-      router.replace(returnUrl);
+      const isStaff = authenticated.role === "Curator" || authenticated.role === "Admin";
+      router.replace(returnUrl.startsWith("/admin") && !isStaff ? "/gallery" : returnUrl);
     } catch (cause) {
       setError(
         cause instanceof AuthError
