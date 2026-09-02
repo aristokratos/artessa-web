@@ -3,6 +3,7 @@ import { UserMenu } from "./UserMenu";
 
 const NAV = [
   { href: "/gallery", label: "Gallery" },
+  { href: "/artists", label: "Artists" },
   { href: "/exhibitions", label: "Exhibitions" },
   { href: "/about", label: "About" },
 ];

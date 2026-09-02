@@ -4,6 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { commerceApi } from "@/lib/api/commerce";
 import type { ArtworkVariant } from "@/types/catalogue";
 
 /**
@@ -22,8 +23,9 @@ import type { ArtworkVariant } from "@/types/catalogue";
 export function AddToCartButton({ variant }: { variant: ArtworkVariant }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, loading } = useAuth();
+  const { user, loading, getAccessToken } = useAuth();
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!variant.isAvailable) {
     return (
@@ -51,12 +53,25 @@ export function AddToCartButton({ variant }: { variant: ArtworkVariant }) {
     }
 
     setBusy(true);
-    // The cart API is the next milestone; until it exists this is where the
-    // POST to /api/cart/items goes.
-    setBusy(false);
+    setError(null);
+    try {
+      const token = await getAccessToken();
+      if (!token) {
+        router.push(`/login?returnUrl=${encodeURIComponent(pathname)}&add=${variant.id}`);
+        return;
+      }
+      await commerceApi.add(token, variant.id);
+      window.dispatchEvent(new CustomEvent("artessa:cart-changed"));
+      router.push("/cart");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not add this work.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
+    <div>
     <Button
       className="mt-6 w-full"
       onClick={onClick}
@@ -66,5 +81,7 @@ export function AddToCartButton({ variant }: { variant: ArtworkVariant }) {
     >
       {loading ? "…" : busy ? "Adding…" : "Add to cart"}
     </Button>
+    {error && <p className="mt-3 text-sm text-[var(--color-danger)]" role="alert">{error}</p>}
+    </div>
   );
 }
