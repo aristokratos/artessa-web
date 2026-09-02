@@ -2,7 +2,7 @@
 
 import type { UserDto } from "@/types/auth";
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5080";
+const BASE = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5080").replace(/\/$/, "");
 
 export interface AuthResponse {
   accessToken: string;
@@ -26,25 +26,43 @@ export class AuthError extends Error {
  * wildcard) for the browser to accept it.
  */
 async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const response = await fetch(`${BASE}${path}`, {
-    ...init,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      ...init.headers,
-    },
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${BASE}${path}`, {
+      ...init,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        ...init.headers,
+      },
+    });
+  } catch {
+    throw new AuthError(
+      "We could not reach Artessa. Check your connection and try again.",
+      0,
+    );
+  }
 
   if (response.status === 204) return undefined as T;
 
   const text = await response.text();
-  const body = text ? JSON.parse(text) : null;
+  let body: unknown = null;
+  if (text) {
+    try {
+      body = JSON.parse(text) as unknown;
+    } catch {
+      // A hosting proxy may return an HTML error page. Authentication callers
+      // still receive a useful error instead of a JSON.parse exception.
+    }
+  }
 
   if (!response.ok) {
+    const problem = body as { detail?: string; title?: string } | null;
     // The API speaks RFC 9457, so the human-readable reason is in `detail`.
     throw new AuthError(
-      body?.detail ?? body?.title ?? "Something went wrong. Please try again.",
+      problem?.detail || problem?.title ||
+        "Sign-in could not be completed. Please try again.",
       response.status,
     );
   }
