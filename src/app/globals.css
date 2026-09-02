@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Artessa design tokens — "a museum after dark".
+   Near-black ground, warm gallery light, generous negative space. The artwork
+   is always the brightest thing on screen; the interface never competes.
+   See docs/design-system.md and PRD §10.
+--------------------------------------------------------------------------- */
+
+@theme {
+  /* --- Ground and surfaces (dark is the default) --- */
+  --color-ink: #0a0a0b;
+  --color-surface: #141416;
+  --color-surface-raised: #1c1c1f;
+  --color-hairline: #2a2a2e;
+
+  /* --- Text ramp. All pass 4.5:1 on --color-ink. --- */
+  --color-text: #f4f4f5;
+  --color-text-muted: #a1a1aa;
+  --color-text-subtle: #71717a;
+
+  /* --- Warm gallery light: the single accent. Used sparingly. --- */
+  --color-light: #e8c77a;
+  --color-light-dim: #b9985a;
+
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+
+  /* --- Type. Editorial serif for the art, grotesque for the interface. ---
+     The *-loaded variables come from next/font in app/layout.tsx; the stacks
+     after them are what renders if the font request fails, so the page never
+     falls back to Times. */
+  --font-display: var(--font-display-loaded), ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-sans-loaded), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Fluid scale — no breakpoint jumps in the display sizes. */
+  --text-display-lg: clamp(2.75rem, 7vw, 6rem);
+  --text-display: clamp(2rem, 4.5vw, 3.75rem);
+  --text-title: clamp(1.375rem, 2.2vw, 2rem);
+
+  /* --- Motion. Ease-out for entrances, spring for interaction. --- */
+  --ease-out-gallery: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-gallery: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+}
+
+/* Light mode is a first-class variant, not an afterthought: a real gallery is
+   white-walled. The token roles stay identical; only the values invert. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --color-ink: #fbfbfa;
+    --color-surface: #ffffff;
+    --color-surface-raised: #f4f4f2;
+    --color-hairline: #e4e4e2;
+    --color-text: #18181b;
+    --color-text-muted: #52525b;
+    --color-text-subtle: #7a7a83;
+    --color-light: #a8791f;
+    --color-light-dim: #c9a45c;
+  }
+}
+
+:root[data-theme="light"] {
+  --color-ink: #fbfbfa;
+  --color-surface: #ffffff;
+  --color-surface-raised: #f4f4f2;
+  --color-hairline: #e4e4e2;
+  --color-text: #18181b;
+  --color-text-muted: #52525b;
+  --color-text-subtle: #7a7a83;
+  --color-light: #a8791f;
+  --color-light-dim: #c9a45c;
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* PWA-06 / PRD §10.4 tier R. This is the override that outranks every device
+   tier: no parallax, no scroll-jacking, no autoplay. Individual 3D scenes also
+   check this in JS and refuse to mount — CSS alone cannot stop a render loop. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus must always be visible and never removed — the gallery is fully
+   keyboard-operable, filters and variant picker included (PRD §10.6). */
+:focus-visible {
+  outline: 2px solid var(--color-light);
+  outline-offset: 2px;
+}

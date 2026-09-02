@@ -1,0 +1,23 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+#
+# NO SECRET VALUES BELOW; this file is committed. Note that every NEXT_PUBLIC_*
+# value is inlined into the client bundle at build time and is therefore public
+# by definition — never put a secret behind that prefix. The Google *client
+# secret* and the Paystack *secret key* live only in the API service.
+
+services:
+  - type: web
+    name: artessa-web
+    runtime: docker
+    plan: free
+    region: frankfurt          # same region as artessa-api
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://artessa-api.onrender.com
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://artessa-web.onrender.com
+      - key: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+        sync: false

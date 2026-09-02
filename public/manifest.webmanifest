@@ -1,0 +1,21 @@
+{
+  "name": "Artessa — Contemporary Art Gallery",
+  "short_name": "Artessa",
+  "description": "A curated gallery of contemporary art. Originals, limited prints, and digital works.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0a0b",
+  "theme_color": "#0a0a0b",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Gallery", "url": "/gallery" },
+    { "name": "Cart", "url": "/cart" },
+    { "name": "My orders", "url": "/account/orders" }
+  ]
+}
