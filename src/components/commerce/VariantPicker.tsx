@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { AddToCartButton } from "./AddToCartButton";
-import { cn, formatPrice } from "@/lib/utils";
+import { Price } from "./Price";
+import { cn } from "@/lib/utils";
 import type { ArtworkVariant } from "@/types/catalogue";
 
 const KIND_LABEL: Record<ArtworkVariant["kind"], string> = {
@@ -66,7 +67,7 @@ export function VariantPicker({ variants }: { variants: ArtworkVariant[] }) {
               </span>
             </span>
             <span className="shrink-0 text-sm">
-              {v.isAvailable ? formatPrice(v.priceMinor, v.currency) : "Sold"}
+              {v.isAvailable ? <Price minor={v.priceMinor} currency={v.currency} compact /> : "Sold"}
             </span>
           </button>
         ))}
@@ -75,7 +76,7 @@ export function VariantPicker({ variants }: { variants: ArtworkVariant[] }) {
       <div className="mt-7 border-t border-[var(--color-hairline)] pt-7">
         <div className="flex items-baseline justify-between gap-4">
           <span className="font-[family-name:var(--font-display)] text-3xl">
-            {variant.isAvailable ? formatPrice(variant.priceMinor, variant.currency) : "Sold"}
+            {variant.isAvailable ? <Price minor={variant.priceMinor} currency={variant.currency} /> : "Sold"}
           </span>
           {remaining !== null && remaining > 0 && (
             <Badge tone="accent">

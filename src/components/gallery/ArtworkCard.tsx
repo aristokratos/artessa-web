@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { ArtworkImage } from "./ArtworkImage";
 import { Badge } from "@/components/ui/Badge";
+import { Price } from "@/components/commerce/Price";
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
-import { cn, formatPrice } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import type { ArtworkSummary } from "@/types/catalogue";
 
 /**
@@ -103,7 +104,7 @@ export function ArtworkCard({ artwork }: { artwork: ArtworkSummary }) {
                 From
               </span>
               <span className="text-sm text-[var(--color-text)]">
-                {formatPrice(artwork.fromPriceMinor, artwork.currency)}
+                <Price minor={artwork.fromPriceMinor} currency={artwork.currency} compact />
               </span>
             </>
           )}
