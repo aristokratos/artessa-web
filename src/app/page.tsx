@@ -5,6 +5,11 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
 import { getExhibitions, getExhibition, searchArtworks } from "@/lib/api/catalogue";
 
+// The catalogue API is an independently deployed Render service. Rendering
+// this route at request time keeps a frontend build from depending on that
+// service being configured and reachable from the Vercel build worker.
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   // The featured row is the current exhibition when there is one — the curator
   // decides what leads, not a flag on the artwork.
