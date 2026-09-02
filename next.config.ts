@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "**.r2.dev" },
       { protocol: "https", hostname: "**.cloudflarestorage.com" },
+      // The API serves watermarked renditions from its own origin while local
+      // disk storage is in use.
+      { protocol: "http", hostname: "localhost", port: "5080", pathname: "/uploads/**" },
+      { protocol: "https", hostname: "artessa-api.onrender.com", pathname: "/uploads/**" },
     ],
   },
   // three.js ships untranspiled ESM that Next needs to process itself.

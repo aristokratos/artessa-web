@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Anton, Fraunces, Inter } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
@@ -16,6 +16,15 @@ const display = Fraunces({
 const sans = Inter({
   subsets: ["latin"],
   variable: "--font-sans-loaded",
+  display: "swap",
+});
+
+// Used for one thing only: the giant ghost word behind the hero carousel. It
+// is a graphic mass, not type to be read — editorial headings stay on Fraunces.
+const ghost = Anton({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-ghost",
   display: "swap",
 });
 
@@ -41,7 +50,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en" className={`${display.variable} ${sans.variable} ${ghost.variable}`}>
       <body className="min-h-dvh">
         <AuthProvider>
           <Header />

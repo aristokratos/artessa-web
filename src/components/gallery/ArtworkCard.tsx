@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { ArtworkPlate } from "./ArtworkPlate";
+import { ArtworkImage } from "./ArtworkImage";
 import { Badge } from "@/components/ui/Badge";
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
 import { cn, formatPrice } from "@/lib/utils";
@@ -51,12 +51,16 @@ export function ArtworkCard({ artwork }: { artwork: ArtworkSummary }) {
           transformStyle: "preserve-3d",
         }}
       >
-        <div className="aspect-4/5 overflow-hidden">
-          <ArtworkPlate
+        {/* `relative` is required by next/image fill; the plate fallback is
+            absolutely positioned by the same wrapper. */}
+        <div className="relative aspect-4/5 overflow-hidden">
+          <ArtworkImage
             slug={artwork.slug}
             title={artwork.title}
             artistName={artwork.artistName}
-            className="h-full w-full transition-transform duration-700 ease-[var(--ease-out-gallery)] group-hover:scale-[1.04]"
+            url={artwork.primaryImageUrl}
+            alt={artwork.title}
+            className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-out-gallery)] group-hover:scale-[1.04]"
           />
         </div>
 

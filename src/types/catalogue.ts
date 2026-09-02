@@ -41,6 +41,8 @@ export interface ArtworkSummary {
   fromPriceMinor: number | null;
   currency: string;
   isSoldOut: boolean;
+  /** Watermarked preview rendition, or null before photography is uploaded. */
+  primaryImageUrl: string | null;
 }
 
 export interface ArtworkVariant {
@@ -68,6 +70,8 @@ export interface ArtworkMedia {
   height: number | null;
   sortOrder: number;
   isPrimary: boolean;
+  /** Resolved public URL of the watermarked rendition. */
+  url: string;
 }
 
 export interface ArtworkDetail {

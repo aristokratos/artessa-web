@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArtworkPlate } from "@/components/gallery/ArtworkPlate";
+import { ArtworkImage } from "@/components/gallery/ArtworkImage";
 import { ArtworkCard } from "@/components/gallery/ArtworkCard";
 import { VariantPicker } from "@/components/commerce/VariantPicker";
 import { Badge } from "@/components/ui/Badge";
@@ -50,12 +50,18 @@ export default async function ArtworkPage({ params }: Props) {
 
       <div className="grid gap-12 lg:grid-cols-[1.25fr_1fr] lg:gap-16">
         <div>
-          <div className="overflow-hidden rounded-sm bg-[var(--color-surface)]">
-            <ArtworkPlate
+          <div className="relative aspect-4/5 overflow-hidden rounded-sm bg-[var(--color-surface)]">
+            {/* The detail view uses the primary rendition — watermarked, like
+                everything else served publicly. */}
+            <ArtworkImage
               slug={artwork.slug}
               title={artwork.title}
               artistName={artwork.artistName}
-              className="aspect-4/5 w-full"
+              url={artwork.media.find((m) => m.isPrimary)?.url ?? artwork.media[0]?.url ?? null}
+              alt={artwork.media.find((m) => m.isPrimary)?.altText}
+              sizes="(max-width: 1024px) 100vw, 55vw"
+              priority
+              className="object-cover"
             />
           </div>
           {/* Deep zoom (ART-03) and the lit 3D view (ART-04) attach here once
