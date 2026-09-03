@@ -4,19 +4,19 @@ import { useEffect, useState } from "react";
 import { formatPrice } from "@/lib/utils";
 
 const API = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5080").replace(/\/$/, "");
-let sharedRate: number | null = null;
-let pending: Promise<number | null> | null = null;
+let cachedRate: number | null = null;
+let request: Promise<number | null> | null = null;
 
-function getUsdNgnRate() {
-  if (sharedRate) return Promise.resolve(sharedRate);
-  pending ??= fetch(`${API}/api/exchange-rates/usd-ngn`)
+function usdNgnRate() {
+  if (cachedRate) return Promise.resolve(cachedRate);
+  request ??= fetch(`${API}/api/exchange-rates/usd-ngn`)
     .then(response => response.ok ? response.json() : null)
-    .then((value: { rate?: number } | null) => {
-      sharedRate = value?.rate && value.rate > 0 ? value.rate : null;
-      return sharedRate;
+    .then((data: { rate?: number } | null) => {
+      cachedRate = data?.rate && data.rate > 0 ? data.rate : null;
+      return cachedRate;
     })
     .catch(() => null);
-  return pending;
+  return request;
 }
 
 export function Price({ minor, currency, compact = false }: {
@@ -24,17 +24,15 @@ export function Price({ minor, currency, compact = false }: {
   currency: string;
   compact?: boolean;
 }) {
-  const [rate, setRate] = useState<number | null>(sharedRate);
-  useEffect(() => { if (currency === "USD") void getUsdNgnRate().then(setRate); }, [currency]);
+  const [rate, setRate] = useState<number | null>(cachedRate);
+  useEffect(() => {
+    if (currency === "USD") void usdNgnRate().then(setRate);
+  }, [currency]);
 
-  return (
-    <span className="inline-flex flex-col items-end">
-      <span>{formatPrice(minor, currency)}</span>
-      {currency === "USD" && rate && (
-        <span className={`${compact ? "text-[9px]" : "text-xs"} font-normal text-[var(--color-text-subtle)]`}>
-          ≈ {formatPrice(Math.round(minor * rate), "NGN")} at today&apos;s rate
-        </span>
-      )}
-    </span>
-  );
+  return <span className="inline-flex flex-col items-end">
+    <span>{formatPrice(minor, currency)}</span>
+    {currency === "USD" && rate && <span className={`${compact ? "text-[9px]" : "text-xs"} font-normal text-[var(--color-text-subtle)]`}>
+      ≈ {formatPrice(Math.round(minor * rate), "NGN")} at today&apos;s rate
+    </span>}
+  </span>;
 }
